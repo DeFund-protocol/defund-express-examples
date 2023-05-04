@@ -3,7 +3,7 @@ import { Overrides, Wallet, providers } from "ethers";
 
 async function trade_defund(fundAddress: string, from: string, to: string, slippage: number, share: number, network: string, options?: Overrides) {
     const chainId = networkToChainId(network);
-    const signer = getSigner();
+    const signer = getSigner(network);
 
     const convertParams = {
         ratio: Math.floor(share * 100),
@@ -37,13 +37,29 @@ function networkToChainId(network: string): number {
     }
 }
 
-function rpcProvider() {
-    return new providers.JsonRpcProvider("your rpc url");
+function rpcProvider(network: string) {
+  let url;
+  switch (network) {
+    case "ethereum":
+          url =`https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`; 
+          break;
+    case "arbitrum":
+          url =`https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`; 
+          break;
+    case "polygon":
+      url = `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
+      break;
+    case "optimism":
+      url = `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
+      break;
+    default:
+      throw Error("network not supported");
+  }
+   return new providers.JsonRpcProvider(url);
 }
 
 function getSigner() {
-    const privateKey = 'your private key';
-    return new Wallet(privateKey, rpcProvider());
+    return new Wallet(process.env.PRIVATE_KEY as string, rpcProvider(network));
 }
 
 export { trade_defund };
