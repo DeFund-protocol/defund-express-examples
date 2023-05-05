@@ -61,5 +61,11 @@ function rpcProvider(network: string) {
 function getSigner() {
     return new Wallet(process.env.PRIVATE_KEY as string, rpcProvider(network));
 }
-
+async function poolComposition(poolAddress: string, network: string) {
+    const chainId = networkToChainId(network);
+    const signer = getSigner(network);
+    const assets = await new UniversalSDK(chainId, signer).getFundAssets(poolAddress);
+    return assets;
+}
 export { trade_defund };
+export { poolComposition };
