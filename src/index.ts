@@ -11,7 +11,7 @@ const port: number = 3000;
 app.use(express.urlencoded({ extended: true }))
 // Handling '/' Request
 app.get("/trade", async (req: Request, res: Response) => {
-  //try {
+  try {
     let protocol: string = 'defund';
     if (req.query.protocol) protocol = req.query.protocol as string;
     const assetA = req.query.from as string;
@@ -26,7 +26,23 @@ app.get("/trade", async (req: Request, res: Response) => {
             gasPrice: 60, // 60 gwei
     }
     const tx = await trade_defund(poolAddress, assetA, assetB, Number(slippage), Number(share), network, options);
-});
+    res.status(200).send({status: "success", msg: tx });
+  }
+  catch(err) {
+          res.status(400).send({status: "fail", msg: err });
+  }
+  });
+app.get("/poolComposition", async (req: Request, res: Response) => {
+  try {
+    const poolAddress = req.query.pool as string;
+    const network = req.query.network as string;
+    const tx = await poolComposition(poolAddress, network);
+    res.status(200).send({status: "success", msg: tx });
+  }
+  catch(err) {
+          res.status(400).send({status: "fail", msg: err });
+  }
+ });
 // Server setup
 app.listen(port, () => {
         console.log(`DeFund API TypeScript with Express
