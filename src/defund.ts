@@ -1,5 +1,8 @@
 import { UniversalSDK } from "@defund-protocol/v1-sdk";
 import { Overrides, Wallet, providers } from "ethers";
+import * as dotenv from 'dotenv';
+
+dotenv.config()
 
 async function trade_defund(fundAddress: string, from: string, to: string, slippage: number, share: number, network: string, options?: Overrides) {
     const chainId = networkToChainId(network);
