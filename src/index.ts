@@ -2,6 +2,7 @@
 import express from 'express';
 import { trade_defund } from './defund';
 import { Request, Response } from "express";
+import { options } from './defund';
 
 // Initialize the express engine
 const app: express.Application = express();
@@ -21,10 +22,6 @@ app.get("/trade", async (req: Request, res: Response) => {
     const slippage = req.query.slippage as string;
     const poolAddress = req.query.pool as string;
     const network = req.query.network as string
-    const options = {
-            gasLimit: 1000000,
-            gasPrice: 60, // 60 gwei
-    }
     const tx = await trade_defund(poolAddress, assetA, assetB, Number(slippage), Number(share), network, options);
     res.status(200).send({status: "success", msg: tx });
   }
