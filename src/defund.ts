@@ -60,15 +60,9 @@ function networkToChainId(network: string): number {
     }
 }
 
-function rpcProvider(network: string) {
+function infura_rpcProvider(network: string) {
   let url;
   switch (network) {
-    case "ethereum":
-          url =`https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`; 
-          break;
-    case "arbitrum":
-          url =`https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`; 
-          break;
     case "polygon":
       url = `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
       break;
@@ -81,9 +75,17 @@ function rpcProvider(network: string) {
    return new providers.JsonRpcProvider(url);
 }
 
-function getSigner() {
-    return new Wallet(process.env.PRIVATE_KEY as string, rpcProvider(network));
+
+//custom rpc provider in case you don't want to use infura 
+function rpcProvider(url: string) {
+   return new providers.JsonRpcProvider(url);
 }
+
+//replace infura_rpcProvider(network) in the function getSigner() below
+//with rpcProvider("your rpc provider url") to change your provider
+function getSigner(network: string)  {
+    return new Wallet(process.env.PRIVATE_KEY as string, infura_rpcProvider(network));
+
 async function poolComposition(poolAddress: string, network: string) {
     const chainId = networkToChainId(network);
     const signer = getSigner(network);
