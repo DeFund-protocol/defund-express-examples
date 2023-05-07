@@ -1,5 +1,26 @@
 import { UniversalSDK } from "@defund-protocol/v1-sdk";
 import { Overrides, Wallet, providers } from "ethers";
+import axios from "axios";
+import BigNumber from "bignumber.js";
+
+dotenv.config()
+
+export const options = async (network: string): Promise<any> => {
+  if (network === "polygon") {
+    const result = await axios("https://gasstation-mainnet.matic.network/v2");
+    return {
+      gasLimit: "10000000",
+      maxPriorityFeePerGas: new BigNumber(result.data.fast.maxPriorityFee)
+        .shiftedBy(9)
+        .toFixed(0),
+      maxFeePerGas: new BigNumber(result.data.fast.maxFee)
+        .shiftedBy(9)
+        .toFixed(0),
+    };
+  } else {
+    return { gasLimit: "10000000" };
+  }
+};
 
 async function trade_defund(fundAddress: string, from: string, to: string, slippage: number, share: number, network: string, options?: Overrides) {
     const chainId = networkToChainId(network);
