@@ -55,6 +55,8 @@ function networkToChainId(network: string): number {
             return 137;
         case 'mumbai':
             return 80001;
+          case 'arbitrum':
+            return 42161;
         default:
             throw new Error(`Unsupported network: ${network}`)
     }
@@ -68,6 +70,9 @@ function infura_rpcProvider(network: string) {
       break;
     case "optimism":
       url = `https://optimism-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
+      break;
+    case "arbitrum":
+      url = `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`;
       break;
     default:
       throw Error("network not supported");
